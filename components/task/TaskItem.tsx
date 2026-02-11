@@ -20,7 +20,7 @@ interface TaskItemProps {
 function TaskItem({id, title, description,note, time, date, progress, priority, type, isActive, onClick}: TaskItemProps) {
   return (
         <div onClick={onClick} 
-            className={`max-w-xl rounded-xl shadow p-2 mx-2 cursor-pointer transition border
+            className={`rounded-xl shadow p-2 mx-2 cursor-pointer transition border
             ${isActive ? "bg-blue-50 border-blue-500 ring-2 ring-blue-200" : "bg-gray-50 border-transparent hover:bg-slate-100"}
             `}>
 

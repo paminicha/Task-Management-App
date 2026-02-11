@@ -4,7 +4,7 @@ import ReminderItem from './ReminderItem'
 
 function ReminderCard({title}: {title: string}) {
   return (
-    <Card className="h-44 flex flex-col">
+    <Card className="lg:h-44 flex flex-col">
         <h3 className="font-semibold pl-2">{title}</h3>
         <div className="flex-1 overflow-y-auto space-y-2 pr-2">
             <ReminderItem title='Team Meeting' time='13.30'/>
