@@ -17,17 +17,18 @@ export default function TaskPage() {
     setSelectedTask,
     search,
     setSearch,
-    setStatus,
+    setStatus, 
     addTask,
     updateTask,
     deleteTask,
+    setCategory,
   } = useTasks()
 
   const [isAddOpen, setIsAddOpen] = useState(false)
 
   return (
     <div>
-      <DashboardHeader title="Tasks" setSearch={setSearch} search={search} setStatus={setStatus}/>
+      <DashboardHeader title="Tasks" setSearch={setSearch} search={search} setStatus={setStatus} setCategory={setCategory}/>
 
       <div className="px-3 mt-3">
         <Button onClick={() => setIsAddOpen(true)}>+ Add Task</Button>

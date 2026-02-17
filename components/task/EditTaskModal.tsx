@@ -88,9 +88,9 @@ export default function EditTaskModal({ task, onClose, onSave }: Props) {
                 value={status}
                 onChange={e => setStatus(e.target.value as TaskStatus)}
               >
-                <option value="todo">Todo</option>
-                <option value="doing">Doing</option>
-                <option value="done">Done</option>
+                <option value="Todo">Todo</option>
+                <option value="Doing">Doing</option>
+                <option value="Done">Done</option>
               </select>
             </div>
 
@@ -102,7 +102,7 @@ export default function EditTaskModal({ task, onClose, onSave }: Props) {
                 value={category}
                 onChange={e => setCategory(e.target.value)}
               >
-                <option value="Works">Works</option>
+                <option value="Work">Works</option>
                 <option value="Family">Family</option>
                 <option value="Personal">Personal</option>
               </select>

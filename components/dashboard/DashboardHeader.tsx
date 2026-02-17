@@ -1,15 +1,14 @@
 "use client"
 
-import { useTasks } from "@/app/hooks/useTask"
-
 type Props = {
   title:string, 
   setSearch:(value: string)=>void, 
   search:string, 
-  setStatus:(value: string)=>void
-}
+  setStatus:(value: string)=>void,
+  setCategory:(value: string)=>void,
+} 
 
-export default function DashboardHeader({title, setSearch, search, setStatus}: Props) {
+export default function DashboardHeader({title, setSearch, search, setStatus, setCategory}: Props) {
     
   return (
     <div className="p-3">
@@ -28,18 +27,21 @@ export default function DashboardHeader({title, setSearch, search, setStatus}: P
           className="border px-3 py-2 rounded-lg"
           onChange={e => setStatus(e.target.value)}
         >
-          <option value="all">All</option>
-          <option value="todo">Todo</option>
-          <option value="doing">Doing</option>
-          <option value="done">Done</option>
+          <option value="All">All</option>
+          <option value="Todo">Todo</option>
+          <option value="Doing">Doing</option>
+          <option value="Done">Done</option>
         </select>
 
 
-        <select className="px-3 py-2 border rounded-lg">
-          <option>All Task Category</option>
-          <option>Works</option>
-          <option>Family</option>
-          <option>Personal</option>
+        <select 
+          className="px-3 py-2 border rounded-lg"
+          onChange={e => setCategory(e.target.value)}
+        >
+          <option value="All Task Category" >All Task Category</option>
+          <option value="Work" >Work</option>
+          <option value="Family" >Family</option>
+          <option value="Personal" >Personal</option>
         </select>
 
         <input type="date" className="px-3 py-2 border rounded-lg" />

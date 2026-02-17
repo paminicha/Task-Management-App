@@ -7,20 +7,23 @@ export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>(mockTasks)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [search, setSearch] = useState("")
-  const [status, setStatus] = useState<string>("all")
+  const [status, setStatus] = useState<string>("All")
+  const [category, setCategory] = useState<string>("All Task Category")
 
-  const filteredTasks = useMemo(() => {
+  const filteredTasks = useMemo(() => { //คำนวณค่าใหม่ “เฉพาะตอน dependency เปลี่ยน”
     return tasks.filter(task => {
       const matchSearch = task.title
         .toLowerCase()
         .includes(search.toLowerCase())
 
       const matchStatus =
-        status === "all" ? true : task.status === status
+        status === "All" ? true : task.status === status
+      const matchCategory =
+        category === "All Task Category" ? true : task.category === category
 
-      return matchSearch && matchStatus
+      return matchSearch && matchStatus && matchCategory //ต้องผ่านทุกเงื่อนไขพร้อมกัน
     })
-  }, [tasks, search, status])
+  }, [tasks, search, status, category]) // dependency 
 
   const addTask = (task: Task) => {
     setTasks(prev => [...prev, task])
@@ -47,6 +50,7 @@ export function useTasks() {
     setSearch,
     status,
     setStatus,
+    setCategory,
     addTask,
     updateTask,
     deleteTask,

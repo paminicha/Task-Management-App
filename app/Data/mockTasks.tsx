@@ -12,7 +12,7 @@ export const mockTasks: Task[] = [
     endDate: "2026-01-30",
     startTime: "08:00",
     endTime: "09:00",
-    category: "work",
+    category: "Work",
     note: "Note1"
   },
   {
@@ -26,7 +26,7 @@ export const mockTasks: Task[] = [
     endDate: "2026-01-30",
     startTime: "20:00",
     endTime: "21:00",
-    category: "personal",
+    category: "Personal",
   },
   {
     id: "3",
@@ -38,6 +38,6 @@ export const mockTasks: Task[] = [
     endDate: "2026-01-29",
     startTime: "18:00",
     endTime: "19:00",
-    category: "health",
+    category: "Personal",
   },
 ]

@@ -5,12 +5,11 @@ import { TaskStatus } from "@/app/Data/task"
 import { TaskPriority } from "@/app/Data/task"
 
 type Props = {
-  task: Task
   onClose: () => void
   onSave: (task: Task) => void
 }
 
-export default function AddTaskModal({ task, onClose, onSave }: Props) {
+export default function AddTaskModal({ onClose, onSave }: Props) {
   const [title, setTitle] = useState("");
   const [description1, setDescription] = useState("");
   const [status, setStatus] = useState<TaskStatus>("Todo");
@@ -86,9 +85,9 @@ export default function AddTaskModal({ task, onClose, onSave }: Props) {
                 value={status}
                 onChange={e => setStatus(e.target.value as TaskStatus)}
               >
-                <option value="todo">Todo</option>
-                <option value="doing">Doing</option>
-                <option value="done">Done</option>
+                <option value="Todo">Todo</option>
+                <option value="Doing">Doing</option>
+                <option value="Done">Done</option>
               </select>
             </div>
 
@@ -100,7 +99,7 @@ export default function AddTaskModal({ task, onClose, onSave }: Props) {
                 value={category}
                 onChange={e => setCategory(e.target.value)}
               >
-                <option value="Works">Works</option>
+                <option value="Work">Works</option>
                 <option value="Family">Family</option>
                 <option value="Personal">Personal</option>
               </select>
