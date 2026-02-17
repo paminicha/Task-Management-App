@@ -1,60 +1,44 @@
 "use client"
-import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import TaskDetail from "@/components/task/TaskDetail";
-import TaskItem from "@/components/task/TaskItem";
+
+import DashboardHeader from "@/components/dashboard/DashboardHeader"
+import { Button } from "@/components/ui/Button"
+import { Card } from "@/components/ui/Card"
+import TaskDetail from "@/components/task/TaskDetail"
+import TaskItem from "@/components/task/TaskItem"
+import AddTaskModal from "@/components/task/AddTaskModal"
+import { useTasks } from "@/app/hooks/useTask"
 import { useState } from "react"
 
-type Task = {
-  id: number
-  title: string
-  progress: number
-  note: string
-  time: string
-  date: string
-  priority: string
-  description: string
-  type: string
-}
-
-const tasks: Task[] = [
-  {
-    id: 1,
-    title: "Write Report",
-    progress: 89,
-    note: "Notes",
-    time: "08.00-09.00",
-    date: "30/12/26",
-    priority: "High",
-    description: "Finish company report",
-    type: "work"
-  },
-  {
-    id: 2,
-    title: "Read A Book",
-    progress: 39,
-    note: "Notes",
-    time: "08.00-09.00",
-    date: "30/12/26",
-    priority: "Medium",
-    description: "Read design book",
-    type: "personal"
-  },
-]
-
-
 export default function TaskPage() {
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
+
+  const {
+    tasks,
+    selectedTask,
+    setSelectedTask,
+    search,
+    setSearch,
+    setStatus,
+    addTask,
+    updateTask,
+    deleteTask,
+  } = useTasks()
+
+  const [isAddOpen, setIsAddOpen] = useState(false)
+
   return (
     <div>
-      <DashboardHeader title='Tasks'></DashboardHeader>
-      <div className="px-3 mt-3"> <Button>+ Add Task</Button> </div>
+      <DashboardHeader title="Tasks" setSearch={setSearch} search={search} setStatus={setStatus}/>
 
-      <Card className="m-3 p-4">
+      <div className="px-3 mt-3">
+        <Button onClick={() => setIsAddOpen(true)}>+ Add Task</Button>
+      </div>
+
+      <Card className="m-3 p-4 h-[75vh]">
         <div className="flex h-full gap-4">
 
-          <div className={`
+          {/* Task List */}
+          <div
+            className={`
               transition-all duration-300
               ${selectedTask ? "hidden lg:block lg:w-[60%]" : "w-full lg:w-[60%]"}
               overflow-y-auto space-y-3 pr-2
@@ -68,13 +52,6 @@ export default function TaskPage() {
                 onClick={() => setSelectedTask(task)}
               />
             ))}
-            {/* <TaskItem title="Write Report" progress={89} note="note... .... ... .. .. ...... .." time="8.00-16.00" date="30/01/26" priority="priority"/>
-            <TaskItem title="Read a Book" progress={39} note="note... .... ... .. .. ...... .." time="8.00-16.00" date="30/01/26" priority="priority"/>
-            <TaskItem title="Email Catch Up Summary" progress={0} note="note... .... ... .. .. ...... .." time="14.00-15.00" date="30/01/26" priority=""/>
-            <TaskItem title="Buy Shampoo" progress={0} note="note... .... ... .. .. ...... .." time="8.00-17.00" date="30/01/26" priority=""/>
-            <TaskItem title="Buy Shampoo" progress={0} note="note... .... ... .. .. ...... .." time="8.00-17.00" date="30/01/26" priority=""/>
-            <TaskItem title="Buy Shampoo" progress={0} note="note... .... ... .. .. ...... .." time="8.00-17.00" date="30/01/26" priority=""/>
-            <TaskItem title="Buy Shampoo" progress={0} note="note... .... ... .. .. ...... .." time="8.00-17.00" date="30/01/26" priority=""/> */}
           </div>
 
           {/* Task Detail */}
@@ -87,28 +64,34 @@ export default function TaskPage() {
           >
             {selectedTask ? (
               <div className="h-full flex flex-col">
-                {/* Mobile Back Button */}
-                <button onClick={() => setSelectedTask(null)}
+                <button
+                  onClick={() => setSelectedTask(null)}
                   className="lg:hidden mb-2 text-sm text-gray-500 text-left"
                 >
                   ← Back
                 </button>
-                
-                <TaskDetail task={selectedTask} />
 
+                <TaskDetail task={selectedTask} update={(updateTask)} deleteTask={deleteTask}/>
               </div>
             ) : (
               <div className="h-full flex items-center justify-center text-gray-400">
                 Select task to view detail
               </div>
-            )
-            }
+            )}
           </div>
 
         </div>
-
       </Card>
+      {isAddOpen && (
+        <AddTaskModal
+          onClose={() => setIsAddOpen(false)}
+          onSave={(newTask) => {
+            addTask(newTask)
+            setIsAddOpen(false)
+          }}
+        />
+      )}
 
     </div>
-  );
+  )
 }

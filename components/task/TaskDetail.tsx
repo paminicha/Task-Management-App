@@ -1,22 +1,16 @@
+"use client"
 import ProgressLine from "../ui/ProgressLine";
-
-type Task = {
-  id: number
-  title: string
-  progress: number
-  note: string
-  time: string
-  date: string
-  priority: string
-  description?: string
-  type: string
-}
+import { Task } from "@/app/Data/task";
+import { useState } from "react";
+import EditTaskModal from "./EditTaskModal";
 
 type Props = {
   task: Task | null
+  update: (updatedTask: Task) => void
+  deleteTask: (id: string) => void
 }
 
-function TaskDetail({ task }: Props) {
+function TaskDetail({ task , update, deleteTask } :Props) {
   if (!task) {
     return (
       <div className="h-full flex items-center justify-center text-gray-400">
@@ -25,6 +19,8 @@ function TaskDetail({ task }: Props) {
     )
   }
 
+  const [isEditOpen, setIsEditOpen] = useState(false)
+
   return (
     <div className="h-full bg-gray-50 rounded-xl shadow-md p-4 flex flex-col">
 
@@ -32,12 +28,13 @@ function TaskDetail({ task }: Props) {
 
       <div className="space-y-3 text-gray-600 text-sm flex-1 font-medium">
         <div>
-          <p>Duration: {task.date}</p>
-          <p>Time: {task.time}</p>
+          <p>Duration: {task.startDate.replaceAll("-", "/")} - {task.endDate.replaceAll("-", "/")}</p>
+          <p>Time: {task.startTime} - {task.endTime}</p>
         </div>
 
         <p><span >Priority:</span> {task.priority}</p>
-        <p><span >Type:</span> {task.type}</p>
+        <p><span >Type:</span> {task.category}</p>
+        <p><span >Status:</span> {task.status}</p>
 
         <div>
           <p >Description:</p>
@@ -57,14 +54,27 @@ function TaskDetail({ task }: Props) {
         </div>
 
         <div className="flex justify-end gap-2">
-          <button className="px-3 py-1.5 rounded-lg bg-amber-400 text-white hover:bg-amber-500">
+          <button className="px-3 py-1.5 rounded-lg bg-amber-400 text-white hover:bg-amber-500"
+            onClick={() => setIsEditOpen(true)}
+          >
             Edited
           </button>
-          <button className="px-3 py-1.5 rounded-lg bg-red-400 text-white hover:bg-red-500">
+          <button className="px-3 py-1.5 rounded-lg bg-blue-400 text-white hover:bg-red-500"
+            onClick={() => deleteTask(task.id)} >
             Delete
           </button>
         </div>
       </div>
+      {isEditOpen && (
+        <EditTaskModal
+          task={task}
+          onClose={()=> setIsEditOpen(false)}
+          onSave={(updatedTask) => {
+            update(updatedTask)
+            setIsEditOpen(false)
+          }}
+        />
+      )}
 
     </div>
   )
