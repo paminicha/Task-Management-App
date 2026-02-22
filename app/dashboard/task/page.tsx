@@ -22,13 +22,19 @@ export default function TaskPage() {
     updateTask,
     deleteTask,
     setCategory,
+    setPriority,
+    setStartDate,
+    setEndDate,
+    setSort,
+    sortedTasks
   } = useTasks()
 
   const [isAddOpen, setIsAddOpen] = useState(false)
 
   return (
     <div>
-      <DashboardHeader title="Tasks" setSearch={setSearch} search={search} setStatus={setStatus} setCategory={setCategory}/>
+      <DashboardHeader title="Tasks" setSearch={setSearch} search={search} setStatus={setStatus} setCategory={setCategory}
+        setPriority={setPriority} setStartDate={setStartDate} setEndDate={setEndDate} setSort={setSort} />
 
       <div className="px-3 mt-3">
         <Button onClick={() => setIsAddOpen(true)}>+ Add Task</Button>
@@ -45,7 +51,8 @@ export default function TaskPage() {
               overflow-y-auto space-y-3 pr-2
             `}
           >
-            {tasks.map(task => (
+          
+            {sortedTasks.map(task => (
               <TaskItem
                 key={task.id}
                 {...task}

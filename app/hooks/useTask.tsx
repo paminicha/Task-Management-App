@@ -9,6 +9,10 @@ export function useTasks() {
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<string>("All")
   const [category, setCategory] = useState<string>("All Task Category")
+  const [priority, setPriority] = useState<string>("all")
+  const [startDate, setStartDate] = useState<string>("")
+  const [endDate, setEndDate] = useState<string>("")
+  const [sort, setSort] = useState<"az" | "newest">("az")
 
   const filteredTasks = useMemo(() => { //คำนวณค่าใหม่ “เฉพาะตอน dependency เปลี่ยน”
     return tasks.filter(task => {
@@ -20,10 +24,34 @@ export function useTasks() {
         status === "All" ? true : task.status === status
       const matchCategory =
         category === "All Task Category" ? true : task.category === category
+      const matchPriority =
+        priority === "all" ? true : task.priority === priority 
+      const matchDate =
+        (!startDate || new Date(task.startDate) >= new Date(startDate)) &&
+        (!endDate || new Date(task.endDate) <= new Date(endDate))
 
-      return matchSearch && matchStatus && matchCategory //ต้องผ่านทุกเงื่อนไขพร้อมกัน
+      return matchSearch && matchStatus && matchCategory && matchPriority && matchDate //ต้องผ่านทุกเงื่อนไขพร้อมกัน
     })
-  }, [tasks, search, status, category]) // dependency 
+  }, [tasks, search, status, category, priority, startDate, endDate]) // dependency 
+
+  const sortedTasks = useMemo(() => {
+    const data = [...filteredTasks]
+
+    if (sort === "az") {
+      data.sort((a, b) => a.title.localeCompare(b.title))
+    }
+
+    if (sort === "newest") {
+      data.sort(
+        (a, b) =>
+          new Date(b.startDate).getTime() -
+          new Date(a.startDate).getTime()
+      )
+    }
+
+    return data
+  }, [filteredTasks, sort])
+
 
   const addTask = (task: Task) => {
     setTasks(prev => [...prev, task])
@@ -54,5 +82,14 @@ export function useTasks() {
     addTask,
     updateTask,
     deleteTask,
+    sortedTasks,
+    priority,
+    setPriority,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    sort,
+    setSort
   }
 }

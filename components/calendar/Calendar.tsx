@@ -2,29 +2,35 @@
 
 import { useState } from "react"
 import dayjs from "dayjs"
+import { Task } from "@/app/Data/task"
 
-type CalendarEvent = {
-  id: number
-  title: string
-  start: string
-  end: string
-  color: string
+
+
+type Props = {
+  tasks: Task[]
+  // onClose: () => void
+  // onSave: (task: Task) => void
 }
 
-const events: CalendarEvent[] = [
-  { id: 1, title: "Project A", start: "2026-02-01", end: "2026-02-03", color: "bg-cyan-100" },
-  { id: 2, title: "Meeting", start: "2026-02-08", end: "2026-02-08", color: "bg-purple-100" },
-  { id: 3, title: "Sprint", start: "2026-02-13", end: "2026-02-15", color: "bg-red-100" },
-  { id: 4, title: "Release", start: "2026-02-19", end: "2026-02-21", color: "bg-yellow-100" },
-  { id: 5, title: "Planning", start: "2026-02-27", end: "2026-02-28", color: "bg-green-100" }
-]
+const categoryColorMap: Record<string, string> = {
+  work: "bg-cyan-200",
+  family: "bg-green-200",
+  personal: "bg-purple-200",
+  friend: "bg-yellow-200",
+  reminder: "bg-red-200",
+}
 
-export default function Calendar() {
+
+export default function Calendar( {tasks} : Props) {
+
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
+
   const [currentMonth, setCurrentMonth] = useState(dayjs())
 
   const startOfMonth = currentMonth.startOf("month")
   const startDate = startOfMonth.startOf("week")
   const endDate = currentMonth.endOf("month").endOf("week")
+  
 
   const days: dayjs.Dayjs[] = []
   let date = startDate
@@ -33,6 +39,12 @@ export default function Calendar() {
     days.push(date)
     date = date.add(1, "day")
   }
+  // console.log(tasks)
+
+  // const categoryColorMap = mockCateColor.reduce((acc, item) => {
+  //   acc[item.category.toLowerCase()] = item.color
+  //   return acc
+  // }, {} as Record<string, string>)
 
   return (
     <div className="w-full">
@@ -77,25 +89,99 @@ export default function Calendar() {
 
               {/* Events */}
               <div className="space-y-1">
-                {events
+                {tasks
+                .filter(task => {
+                  const start = dayjs(task.startDate)
+                  const end = dayjs(task.endDate)                 
+
+                  return (
+                    day.isSame(start, "day") ||
+                    day.isSame(end, "day") ||
+                    (day.isAfter(start, "day") && day.isBefore(end, "day"))
+                  )
+                })
+                .map(task => (
+                  <div
+                    key={task.id}
+                    onClick={() => setSelectedTask(task)}
+                    className={`text-xs rounded px-1 truncate cursor-pointer hover:opacity-80
+                      ${categoryColorMap[task.category.toLowerCase()] || "bg-gray-200"}
+                    `}
+                  >
+                    {task.startTime} {task.title}
+                    
+                  </div>
+                  
+                  
+                ))}
+                {/* {tasks
                   .filter(e =>
-                    day.isSame(e.start) ||
-                    (day.isAfter(e.start) && day.isBefore(e.end)) ||
-                    day.isSame(e.end)
+                    day.isSame(e.startDate) ||
+                    (day.isAfter(e.startDate) && day.isBefore(e.endDate)) ||
+                    day.isSame(e.endDate)
                   )
                   .map(e => (
                     <div
                       key={e.id}
-                      className={`text-xs rounded px-1 truncate ${e.color}`}
+                      className={`text-xs rounded px-1 truncate ${categoryColorMap[e.category.toLowerCase()]}`}
                     >
                       {e.title}
-                    </div>
-                  ))}
+                    </div> 
+                  ))}*/}
+                  
               </div>
             </div>
           )
         })}
       </div>
+
+      {/* modal */}
+      {selectedTask && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-[400px] shadow-lg relative">
+            
+            <button
+              onClick={() => setSelectedTask(null)}
+              className="absolute top-2 right-3"
+            >
+              ✕
+            </button>
+
+            <h3 className="text-lg font-semibold">
+              {selectedTask.title}
+            </h3>
+
+            <p className="text-sm text-gray-600 mt-1">
+              {selectedTask.startDate} {selectedTask.startTime}
+              {" - "}
+              {selectedTask.endDate} {selectedTask.endTime}
+            </p>
+
+            <p className="mt-3 text-sm">
+              {selectedTask.description}
+            </p>
+
+            <div className="flex justify-between mt-4 text-xs">
+              <span>Priority: {selectedTask.priority}</span>
+              <span>Status: {selectedTask.status}</span>
+            </div>
+
+            <div
+              className={`mt-3 inline-block px-2 py-1 text-xs rounded
+                ${categoryColorMap[selectedTask.category.toLowerCase()]}
+              `}
+            >
+              {selectedTask.category}
+            </div>
+
+            {selectedTask.note && (
+              <p className="mt-3 text-sm text-gray-500">
+                Note: {selectedTask.note}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

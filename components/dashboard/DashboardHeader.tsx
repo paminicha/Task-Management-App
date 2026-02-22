@@ -6,9 +6,15 @@ type Props = {
   search:string, 
   setStatus:(value: string)=>void,
   setCategory:(value: string)=>void,
+  setPriority:(value: string)=>void,
+  setStartDate:(value: string)=>void,
+  setEndDate:(value: string)=>void,
+  setSort: any,
+
 } 
 
-export default function DashboardHeader({title, setSearch, search, setStatus, setCategory}: Props) {
+export default function DashboardHeader({title, setSearch, search, setStatus, setCategory, setPriority,
+  setStartDate, setEndDate, setSort }: Props) {
     
   return (
     <div className="p-3">
@@ -32,7 +38,13 @@ export default function DashboardHeader({title, setSearch, search, setStatus, se
           <option value="Doing">Doing</option>
           <option value="Done">Done</option>
         </select>
-
+        
+        <select className="border px-3 py-2 rounded-lg" onChange={e => setPriority(e.target.value)}>
+          <option value="all">All Priority</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
 
         <select 
           className="px-3 py-2 border rounded-lg"
@@ -44,8 +56,13 @@ export default function DashboardHeader({title, setSearch, search, setStatus, se
           <option value="Personal" >Personal</option>
         </select>
 
-        <input type="date" className="px-3 py-2 border rounded-lg" />
-        <input type="date" className="px-3 py-2 border rounded-lg" />
+        <select className="border px-3 py-2 rounded-lg" onChange={e => setSort(e.target.value as any)}>
+          <option value="az">A - Z</option>
+          <option value="newest">Newest</option>
+        </select>
+
+        <input type="date" className="px-3 py-2 border rounded-lg" onChange={e => setStartDate(e.target.value)} />
+        <input type="date" className="px-3 py-2 border rounded-lg" onChange={e => setEndDate(e.target.value)} />
 
       </div>
 

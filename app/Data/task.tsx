@@ -11,8 +11,14 @@ export type Task = {
   progress: number
   startDate: string
   endDate: string
-  startTime: string,
-  endTime: string,
+  startTime: string
+  endTime: string
   note?: string
-  category?: string
+  category: string
+}
+
+export type Category_Color = {
+  category: string
+  color: string
+  status?: TaskStatus
 }
