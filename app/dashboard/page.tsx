@@ -1,4 +1,4 @@
-// Home page
+"use client"
 import Image from "next/image";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DateCard from "@/components/dashboard/DateCard";
@@ -9,11 +9,30 @@ import TodayTaskList from "@/components/dashboard/TodayTaskCard";
 import WeeklyCard from "@/components/dashboard/WeeklyCard";
 import GoalCard from "@/components/dashboard/GoalCard";
 import GoalRoutineCard from "@/components/dashboard/GoalRoutineCard";
+import { useTasks } from "@/features/hooks/useTask";
 
 export default function DashboardPage() {
+  const {
+      tasks,
+      selectedTask,
+      setSelectedTask,
+      search,
+      setSearch,
+      setStatus, 
+      addTask,
+      updateTask,
+      deleteTask,
+      setCategory,
+      setPriority,
+      setStartDate,
+      setEndDate,
+      setSort,
+    } = useTasks()
+  
   return (
     <div className="flex flex-col gap-4">
-      <DashboardHeader title="Tasks Management Overview" />
+      <DashboardHeader title="Tasks Management Overview" setSearch={setSearch} search={search} setStatus={setStatus} setCategory={setCategory}
+                    setPriority={setPriority} setStartDate={setStartDate} setEndDate={setEndDate} setSort={setSort} />
 
       {/* Stats Section */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-3">

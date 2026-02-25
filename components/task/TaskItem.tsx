@@ -1,6 +1,6 @@
 import React from 'react'
 import ProgressLine from '../ui/ProgressLine';
-import { Task } from '@/app/Data/task';
+import { Task } from '@/Data/task';
 
 type TaskItemProps = Task & {
   isActive: boolean

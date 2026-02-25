@@ -1,6 +1,6 @@
 "use client"
 import ProgressLine from "../ui/ProgressLine";
-import { Task } from "@/app/Data/task";
+import { Task } from "@/Data/task";
 import { useState } from "react";
 import EditTaskModal from "./EditTaskModal";
 

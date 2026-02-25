@@ -1,5 +1,5 @@
-import Navbar from "@/components/layout/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
+import ThemeProvider from "@/features/theme/ThemeProvider";
 
 export default function DashboardLayout({
   children,
@@ -7,6 +7,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
+    <ThemeProvider>
     <div className="min-h-screen flex flex-col">
 
       {/* Body */}
@@ -22,5 +23,6 @@ export default function DashboardLayout({
 
       </div>
     </div>
+    </ThemeProvider>
   );
 }

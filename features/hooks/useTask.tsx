@@ -1,10 +1,19 @@
 "use client"
-import { useState, useMemo } from "react"
-import { Task } from "../Data/task"
-import { mockTasks } from "../Data/mockTasks"
+import { useState, useMemo, useEffect } from "react"
+import { Task } from "@/Data/task"
+import { mockTasks } from "@/Data/mockTasks"
+import { fetchTasks, createTask, updateTask, deleteTask } from "../service/task.service"
 
 export function useTasks() {
-  const [tasks, setTasks] = useState<Task[]>(mockTasks)
+  // const [tasks, setTasks] = useState<Task[]>(mockTasks)
+  // const [tasks, setTasks] = useState<Task[]>(() => {
+  //   if (typeof window !== "undefined") {
+  //     const saved = localStorage.getItem("tasks")
+  //   return saved ? JSON.parse(saved) : []
+  // }
+  // return []
+  // })
+
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<string>("All")
@@ -13,6 +22,30 @@ export function useTasks() {
   const [startDate, setStartDate] = useState<string>("")
   const [endDate, setEndDate] = useState<string>("")
   const [sort, setSort] = useState<"az" | "newest">("az")
+
+  // useEffect( () => {
+  //   localStorage.setItem("tasks", JSON.stringify(tasks)
+  // )
+  // }, [tasks])
+
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoading(true)
+        const data = await fetchTasks()
+        setTasks(data)
+      } catch (err: any) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    load()
+  }, [])
 
   const filteredTasks = useMemo(() => { //คำนวณค่าใหม่ “เฉพาะตอน dependency เปลี่ยน”
     return tasks.filter(task => {
@@ -53,43 +86,86 @@ export function useTasks() {
   }, [filteredTasks, sort])
 
 
-  const addTask = (task: Task) => {
+  const addTask = async (task: Task) => {
     setTasks(prev => [...prev, task])
+    try {
+      await createTask(task)
+    } catch (err) {
+      // 2. ถ้า error → rollback
+      setTasks(prev => prev.filter(t => t.id !== task.id))
+    }
   }
 
-  const updateTask = (updated: Task) => {
+  // const updateTask = (updated: Task) => {
+  //   setTasks(prev =>
+  //     prev.map(t => (t.id === updated.id ? updated : t))
+  //   )
+  //     setSelectedTask(updated)
+  // }
+  const updateTaskHandler = async (updated: Task) => {
+    const oldTasks = tasks
+
     setTasks(prev =>
       prev.map(t => (t.id === updated.id ? updated : t))
     )
     setSelectedTask(updated)
+    try {
+      await updateTask(updated.id, updated)
+    } catch {
+      setTasks(oldTasks) // rollback
+    }
   }
 
-  const deleteTask = (id: string) => {
+  // const deleteTask = (id: string) => {
+  //   setTasks(prev => prev.filter(t => t.id !== id))
+  //   setSelectedTask(null)
+  // }
+  const deleteTaskHandler = async (id: string) => {
+    const oldTasks = tasks
+
     setTasks(prev => prev.filter(t => t.id !== id))
     setSelectedTask(null)
+
+    try {
+      await deleteTask(id)
+    } catch {
+      setTasks(oldTasks) // rollback
+    }
   }
 
   return {
-    tasks: filteredTasks,
+    tasks: sortedTasks,
     rawTasks: tasks,
+    loading, 
+    error, 
+
     selectedTask,
     setSelectedTask,
+
     search,
     setSearch,
+
     status,
     setStatus,
+
+    category, 
     setCategory,
-    addTask,
-    updateTask,
-    deleteTask,
-    sortedTasks,
+
     priority,
     setPriority,
+    
     startDate,
     setStartDate,
+
     endDate,
     setEndDate,
+
     sort,
-    setSort
+    setSort,
+
+    addTask,
+    updateTask: updateTaskHandler,
+    deleteTask: deleteTaskHandler,
+    
   }
 }

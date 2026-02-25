@@ -1,8 +1,8 @@
 "use client"
 import { useState } from "react"
-import { Task } from "@/app/Data/task"
-import { TaskStatus } from "@/app/Data/task"
-import { TaskPriority } from "@/app/Data/task"
+import { Task } from "@/Data/task"
+import { TaskStatus } from "@/Data/task"
+import { TaskPriority } from "@/Data/task"
 
 type Props = {
   onClose: () => void

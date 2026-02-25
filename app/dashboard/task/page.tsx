@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card"
 import TaskDetail from "@/components/task/TaskDetail"
 import TaskItem from "@/components/task/TaskItem"
 import AddTaskModal from "@/components/task/AddTaskModal"
-import { useTasks } from "@/app/hooks/useTask"
+import { useTasks } from "@/features/hooks/useTask"
 import { useState } from "react"
 
 export default function TaskPage() {
@@ -26,7 +26,6 @@ export default function TaskPage() {
     setStartDate,
     setEndDate,
     setSort,
-    sortedTasks
   } = useTasks()
 
   const [isAddOpen, setIsAddOpen] = useState(false)
@@ -35,8 +34,10 @@ export default function TaskPage() {
   return (
     <div>
       
-      <DashboardHeader title="Tasks" setSearch={setSearch} search={search} setStatus={setStatus} setCategory={setCategory}
-        setPriority={setPriority} setStartDate={setStartDate} setEndDate={setEndDate} setSort={setSort} />
+      <DashboardHeader title="Tasks" 
+        setSearch={setSearch} search={search} setStatus={setStatus} setCategory={setCategory}
+        setPriority={setPriority} setStartDate={setStartDate} setEndDate={setEndDate} setSort={setSort} 
+        />
 
       <div className="px-3 mt-3">
         <Button onClick={() => setIsAddOpen(true)}>+ Add Task</Button>
@@ -54,7 +55,7 @@ export default function TaskPage() {
             `}
           >
           
-            {sortedTasks.map(task => (
+            {tasks.map(task => (
               <TaskItem
                 key={task.id}
                 {...task}

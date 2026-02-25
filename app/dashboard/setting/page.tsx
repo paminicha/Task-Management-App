@@ -1,8 +1,8 @@
 "use client"
 import ToggleButton from "@/components/Setting/ToggleButton"
 import { Card } from "@/components/ui/Card"
-import { useEffect, useState } from "react"
-import { themeColors, ThemeColor } from "@/app/lib/theme.config"
+import { useTheme } from "@/features/theme/ThemeProvider"
+import { ThemeColor } from "@/features/theme/theme.config"
 
 const colors = [
   "Default", "Black", "White", "Blue",
@@ -11,63 +11,13 @@ const colors = [
 ] as ThemeColor[]
 
 export default function SettingPage() {
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
-  if (typeof window !== "undefined") {
-      return (localStorage.getItem("theme") as "light" | "dark") || "light"
-    }
-    return "light"
-  })
-  const [color, setColor] = useState<ThemeColor>(() => {
-    if (typeof window !== "undefined") {
-      return (localStorage.getItem("color") as ThemeColor) || "Default"
-    }
-    return "Default"
-  })
-  const [customColor, setCustomColor] = useState(() => {
-    if (typeof window !== "undefined") {
-      return (localStorage.getItem("customColor") as ThemeColor) || "#3b82f6"
-    }
-    return "#3b82f6"
-  })
 
-  const setPrimaryColor = (color: ThemeColor) => {
-    const root = document.documentElement
-    root.style.setProperty("--color-primary", themeColors[color])
-
-    // custom color
-    if (color === "Custom") {
-      root.style.setProperty("--color-primary", customColor)
-    } else {
-      root.style.setProperty("--color-primary", themeColors[color])
-    }
-
-    // text nav logic
-    if (color === "White") {
-      root.style.setProperty("--color-text-nav", "#242424")
-    } else if (color === "Black") {
-      root.style.setProperty("--color-text-nav", "#ffffff")
-    } else {
-      root.style.setProperty("--color-text-nav", "var(--color-text-nav)")
-      // root.style.removeProperty("--color-text-nav")
-    }
-  }
-
-  useEffect(() => {
-    const root = document.documentElement
-
-    if (theme === "dark") {
-      root.classList.add("dark")
-    } else {
-      root.classList.remove("dark")
-    }
-    setPrimaryColor(color)
-
-    localStorage.setItem("theme", theme)
-    localStorage.setItem("color", color)
-    localStorage.setItem("customColor", customColor)
-
-  }, [theme, color, customColor])
-
+  const {
+    theme, setTheme, 
+    color, setColor, 
+    customColor, setCustomColor, 
+  } = useTheme()
+  
   return (
     <div className="p-4 space-y-6">
       <h1 className="text-2xl font-bold">Setting</h1>
