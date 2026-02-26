@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect } from "react"
 import { Task } from "@/Data/task"
 import { mockTasks } from "@/Data/mockTasks"
 import { fetchTasks, createTask, updateTask, deleteTask } from "../service/task.service"
+import { TaskStatus } from "@/Data/task"
 
 export function useTasks() {
   // const [tasks, setTasks] = useState<Task[]>(mockTasks)
@@ -103,16 +104,27 @@ export function useTasks() {
   //     setSelectedTask(updated)
   // }
   const updateTaskHandler = async (updated: Task) => {
-    const oldTasks = tasks
+    const normalizedTask =
+      updated.progress === 100 ? { ...updated, status: "Done" as TaskStatus} : 
+      updated.progress === 0 ? { ...updated, status: "Todo" as TaskStatus} : 
+      { ...updated, status: "Doing" as TaskStatus}
+
+    const oldTasks = [...tasks]
+    const oldSelected = selectedTask
 
     setTasks(prev =>
-      prev.map(t => (t.id === updated.id ? updated : t))
+      prev.map(t =>
+        t.id === normalizedTask.id ? normalizedTask : t
+      )
     )
-    setSelectedTask(updated)
+
+    setSelectedTask(normalizedTask)
+
     try {
-      await updateTask(updated.id, updated)
+      await updateTask(normalizedTask.id, normalizedTask)
     } catch {
-      setTasks(oldTasks) // rollback
+      setTasks(oldTasks)
+      setSelectedTask(oldSelected)
     }
   }
 
@@ -153,7 +165,7 @@ export function useTasks() {
 
     priority,
     setPriority,
-    
+
     startDate,
     setStartDate,
 

@@ -12,15 +12,26 @@ type Props = {
 export default function AddTaskModal({ onClose, onSave }: Props) {
   const [title, setTitle] = useState("");
   const [description1, setDescription] = useState("");
-  const [status, setStatus] = useState<TaskStatus>("Todo");
+  // const [status, setStatus] = useState<TaskStatus>("Todo");
   const [priority, setPriority] = useState<TaskPriority>("low");
   const [progress, setProgress] = useState("0")
   const [category, setCategory] = useState("");
   const [note, setNote] = useState("");
-  const [startDate, setStartDate] = useState(new Date().toISOString());
-  const [endDate, setEndDate] = useState(new Date().toISOString());
+  const [startDate, setStartDate] = useState(new Date().setHours(0, 0, 0, 0).toString());
+  const [endDate, setEndDate] = useState(new Date().setHours(0, 0, 0, 0).toString());
   const [startTime, setStartTime] = useState("0.00");
   const [endTime, setEndTime] = useState("0.00");
+
+  const numericProgress = Number(progress) || 0
+
+  let status: TaskStatus
+  if (numericProgress === 100) {
+    status = "Done"
+  } else if (numericProgress === 0) {
+    status = "Todo"
+  } else {
+    status = "Doing"
+  }
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-start md:items-center overflow-y-auto">
@@ -78,7 +89,7 @@ export default function AddTaskModal({ onClose, onSave }: Props) {
             </div>
 
             {/* Status */}
-            <div className="space-y-1">
+            {/* <div className="space-y-1">
               <label className="text-sm font-medium">Status</label>
               <select
                 className="border w-full p-2 rounded-lg"
@@ -89,7 +100,7 @@ export default function AddTaskModal({ onClose, onSave }: Props) {
                 <option value="Doing">Doing</option>
                 <option value="Done">Done</option>
               </select>
-            </div>
+            </div> */}
 
             {/* Category */}
             <div className="space-y-1">
@@ -194,7 +205,7 @@ export default function AddTaskModal({ onClose, onSave }: Props) {
                 id: crypto.randomUUID(),
                 title,
                 description: description1,
-                status: status,
+                status,
                 priority: priority,
                 progress: Number(progress) || 0,
                 startDate,

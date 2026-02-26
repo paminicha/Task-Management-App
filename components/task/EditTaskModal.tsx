@@ -80,7 +80,7 @@ export default function EditTaskModal({ task, onClose, onSave }: Props) {
             </div>
 
             {/* Status */}
-            <div className="space-y-1">
+            {/* <div className="space-y-1">
               <label className="text-sm font-medium">Status</label>
               <select
                 className="border w-full p-2 rounded-lg"
@@ -91,7 +91,7 @@ export default function EditTaskModal({ task, onClose, onSave }: Props) {
                 <option value="Doing">Doing</option>
                 <option value="Done">Done</option>
               </select>
-            </div>
+            </div> */}
 
             {/* Category */}
             <div className="space-y-1">

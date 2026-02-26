@@ -10,6 +10,7 @@ import WeeklyCard from "@/components/dashboard/WeeklyCard";
 import GoalCard from "@/components/dashboard/GoalCard";
 import GoalRoutineCard from "@/components/dashboard/GoalRoutineCard";
 import { useTasks } from "@/features/hooks/useTask";
+import { useMemo } from "react"
 
 export default function DashboardPage() {
   const {
@@ -28,6 +29,39 @@ export default function DashboardPage() {
       setEndDate,
       setSort,
     } = useTasks()
+
+
+    const stats = useMemo(() => {
+      const total = tasks.length
+
+      const done = tasks.filter(t => t.status === "Done").length
+      const doing = tasks.filter(t => t.status === "Doing").length
+      const todo = tasks.filter(t => t.status === "Todo").length
+
+      return { total, done, doing, todo }
+    }, [tasks])
+    // console.log(stats)
+
+    const totalProgress = useMemo(() => {
+      if (tasks.length === 0) return 0
+
+      const sum = tasks.reduce((acc, task) => acc + task.progress, 0)
+
+      return Math.round(sum / tasks.length)
+    }, [tasks])
+    // console.log(totalProgress)
+
+    const todayTasks = useMemo(() => {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+
+      return tasks.filter(t => {
+        const start = new Date(t.startDate)
+        const end = new Date(t.endDate)
+
+        return start <= today //&& end >= today
+      })
+    }, [tasks])
   
   return (
     <div className="flex flex-col gap-4">
@@ -41,13 +75,13 @@ export default function DashboardPage() {
         </div>
 
         <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <StatCard title="Complete" value="3/10" />
-          <StatCard title="In Progress" value="2/10" />
-          <StatCard title="Waiting" value="5/10" />
+          <StatCard title="Complete" value={`${stats.done}/${stats.total}`} />
+          <StatCard title="In Progress" value={`${stats.doing}/${stats.total}`} />
+          <StatCard title="Waiting" value={`${stats.todo}/${stats.total}`} />
         </div>
 
         <div className="lg:col-span-3 grid">
-          <StatCard title="Mood Card" value="5/10" />
+          <StatCard title="Mood Card" value="Good day" />
         </div>
       </section>
 
@@ -55,12 +89,12 @@ export default function DashboardPage() {
       <section className="grid lg:grid-cols-12 gap-3">
         <section className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
 
-          <ChartCard value={84} />
+          <ChartCard value={totalProgress} />
           <ReminderCard title="Reminder" />
         </section>
 
         <div className="lg:col-span-6">
-          <TodayTaskList />
+          <TodayTaskList tasks={todayTasks} addTask={addTask}/>
         </div>
 
         <div className="lg:col-span-3">
@@ -73,6 +107,8 @@ export default function DashboardPage() {
         <GoalCard />
         <GoalRoutineCard />
       </section>
+
+      
     </div>
   );
 }

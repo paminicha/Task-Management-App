@@ -1,22 +1,29 @@
 import { Task } from "@/Data/task"
+import { mockTasks } from "./mockTasks"
 
-let tasks: Task[] = []
+let tasks: Task[] = [...mockTasks]
 
 export const db = {
-  get: () => tasks,
-  create: (task: Task) => {
-    tasks.push(task)
+  get: () => [...tasks],
+
+  create: (task: Omit<Task, "id">) => {
+    const newTask = { ...task, id: crypto.randomUUID() }
+    tasks.push(newTask)
     return task
   },
+
   update: (updated: Task) => {
-    tasks = tasks.map(t =>
-      t.id === updated.id ? updated : t
-    )
+    const index = tasks.findIndex(t => t.id === updated.id)
+    if (index === -1) throw new Error("Task not found")
+
+    tasks[index] = updated
     return updated
   },
+
   delete: (id: string) => {
     tasks = tasks.filter(t => t.id !== id)
   },
+
   getById: (id: string) => {
   return tasks.find(t => t.id === id)
 }

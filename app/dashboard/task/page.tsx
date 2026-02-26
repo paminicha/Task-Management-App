@@ -82,7 +82,7 @@ export default function TaskPage() {
                   ← Back
                 </button>
 
-                <TaskDetail task={selectedTask} update={(updateTask)} deleteTask={deleteTask}/>
+                <TaskDetail task={selectedTask} update={updateTask} deleteTask={deleteTask}/>
               </div>
             ) : (
               <div className="h-full flex items-center justify-center text-gray-400">

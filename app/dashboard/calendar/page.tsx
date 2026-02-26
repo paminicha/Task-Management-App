@@ -10,7 +10,6 @@ export default function CalendarPage() {
 
   const {
     tasks,
-    sortedTasks,
     selectedTask,
     setSelectedTask,
     search,
@@ -32,7 +31,7 @@ export default function CalendarPage() {
               setPriority={setPriority} setStartDate={setStartDate} setEndDate={setEndDate} setSort={setSort} />
       
       <Card className="flex-1 m-3 p-4 flex gap-2">
-        <Calendar tasks={sortedTasks}/>
+        <Calendar tasks={tasks}/>
 
       </Card>
 

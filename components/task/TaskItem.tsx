@@ -9,16 +9,28 @@ type TaskItemProps = Task & {
 
 
 function TaskItem({id, title, description,note, startTime, endTime, startDate, endDate, progress, priority, category, isActive, onClick}: TaskItemProps) {
+    
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    const end = new Date(endDate)
+    end.setHours(0, 0, 0, 0)
+
+    const isOverdue = end < today
+
   return (
         <div onClick={onClick} 
             className={`rounded-xl shadow p-2 mx-2 cursor-pointer transition border
-            ${isActive ? "bg-blue-50 border-blue-500 ring-2 ring-blue-200" : "bg-gray-50 border-transparent hover:bg-slate-100"}
+                ${isActive ? "bg-blue-50 border-blue-500 ring-2 ring-blue-200"
+                    : isOverdue ? "bg-red-50 border-red-500"
+                        : "bg-gray-50 border-transparent hover:bg-slate-100"
+                }
             `}>
 
             {/* Top Row */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <input type="checkbox" className="w-5 h-5 bg-gray-300 rounded-full" />  {/* click check */}
+                    <input type="checkbox" className="w-5 h-5 bg-gray-300 rounded-full" />  {/* click to edited progress */}
                     <div>
                         <div className="flex items-center gap-3">
                             <h3 className="font-semibold text-gray-800">{title}</h3>
