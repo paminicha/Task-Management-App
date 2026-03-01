@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server"
-import { db } from "@/Data/db"
+import { db_event } from "@/Data/db_event"
 
 export async function PUT(req: Request) {
   const body = await req.json()
-  return NextResponse.json(db.update(body))
+  return NextResponse.json(db_event.update(body))
 }
 
 export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  db.delete(params.id)
+  db_event.delete(params.id)
   return NextResponse.json({ success: true })
 }

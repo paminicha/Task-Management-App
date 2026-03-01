@@ -105,9 +105,7 @@ export default function TaskPage() {
           }}
         />
       )}
-      <Card className="m-3 p-4 h-[75vh]">
-          <div className="flex h-full gap-4"></div>
-      </Card>
+
 
     </div>
   )

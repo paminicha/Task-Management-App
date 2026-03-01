@@ -14,6 +14,9 @@ export function useTasks() {
   // }
   // return []
   // })
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [search, setSearch] = useState("")
@@ -28,10 +31,6 @@ export function useTasks() {
   //   localStorage.setItem("tasks", JSON.stringify(tasks)
   // )
   // }, [tasks])
-
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function load() {

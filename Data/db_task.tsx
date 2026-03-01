@@ -3,7 +3,7 @@ import { mockTasks } from "./mockTasks"
 
 let tasks: Task[] = [...mockTasks]
 
-export const db = {
+export const db_task = {
   get: () => [...tasks],
 
   create: (task: Omit<Task, "id">) => {

@@ -5,6 +5,8 @@ import Link from "next/link"
 const menu = [
   { label: "Home", href: "/" },
   { label: "Task", href: "/dashboard/task" },
+  { label: "Event", href: "/dashboard/eventreminder" },
+  { label: "Goal", href: "/dashboard/goal" },
   { label: "Calendar", href: "/dashboard/calendar" },
   { label: "Setting", href: "/dashboard/setting" },
 ]

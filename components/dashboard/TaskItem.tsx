@@ -19,7 +19,8 @@ function TaskItem({title, note, time, date, progress, priority}: TaskItemProps) 
             {/* Top Row */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <input type="checkbox" className="w-5 h-5 bg-gray-300 rounded-full" />  {/* click check */}
+                    {/* <input type="checkbox" className="w-5 h-5 bg-gray-300 rounded-full" />  */}
+                    <button className="w-5 h-5 bg-gray-300 rounded-full" >A</button>
                     <div>
                         <div className="flex items-center gap-3">
                             <h3 className="font-semibold text-gray-800">{title}</h3>

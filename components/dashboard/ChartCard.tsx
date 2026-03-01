@@ -13,7 +13,7 @@ export default function ChartCard({ value }: ProgressCardProps) {
 
   return (
     <Card className="h-54">
-      <h3 className="pl-2 font-semibold ">Today Progress</h3>
+      <h3 className="pl-2">Today Progress</h3>
 
       <div className="relative flex items-center justify-center">
         <svg height={radius * 2} width={radius * 2}>
