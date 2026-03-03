@@ -2,7 +2,8 @@
 import React, { useState } from 'react'
 import { Event } from '@/Data/event'
 import { Pencil } from "lucide-react"
-import EditEventModal from '../reminder/EditEventModal'
+import EditEventModal from './EditEventModal'
+import { formatDateTime } from '@/features/hooks/formatDateTime'
 
 interface EventItemProps {
   event: Event,
@@ -19,6 +20,8 @@ function EventItem({event, isActive, onClick, update}: EventItemProps) {
 
   const end = new Date(event.end)
   end.setHours(0, 0, 0, 0)
+  const [startDate, startTimeOnly] = formatDateTime(event.start)
+  const [endDate, endTimeOnly] = formatDateTime(event.end)
 
   const isPast = end < today
   
@@ -39,7 +42,7 @@ function EventItem({event, isActive, onClick, update}: EventItemProps) {
                       >
                           <Pencil size={14} />
                       </button>
-          <h3 className="font-semibold text-gray-800">{startTime}</h3>
+          <h3 className="font-semibold text-gray-800">{startDate} {startTimeOnly} - {endDate} {endTimeOnly}</h3>
           <h3 className="font-semibold text-gray-800">{event.title}</h3>
           
       </div>

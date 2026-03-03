@@ -4,7 +4,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader"
 import { Button } from "@/components/ui/Button"
 import { Card } from "@/components/ui/Card"
 import TaskDetail from "@/components/task/TaskDetail"
-import EventItem from "@/components/dashboard/EventItem"
+import EventItem_date from "@/components/reminder/EventItem_date"
 import AddEventModal from "@/components/reminder/AddEventModal"
 import { useTasks } from "@/features/hooks/useTask"
 import { useState } from "react"
@@ -52,9 +52,9 @@ export default function TaskPage() {
           >
           
             {events.map(event => (
-              <EventItem
-                key={event.id}
+              <EventItem_date
                 event={event}
+                key={Number(event.id)}
                 isActive={selectedEvent?.id === event.id}
                 onClick={() => setSelectedEvent(event)}
                 update={updateEvent}
@@ -66,7 +66,6 @@ export default function TaskPage() {
       </Card>
       {isAddOpen && (
         <AddEventModal
-          events={events}
           onClose={() => setIsAddOpen(false)}
           onSave={(newEvent) => {
             addEvent(newEvent)

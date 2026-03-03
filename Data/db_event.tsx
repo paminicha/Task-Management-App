@@ -4,27 +4,20 @@ import { mockEvents } from "./mockEvents"
 let events: Event[] = [...mockEvents]
 
 export const db_event = {
-  get: () => [...events],
+  get: () => events,
 
-  create: (event: Omit<Event, "id">) => {
-    const newEvent = { ...event, id: crypto.randomUUID() }
-    events.push(newEvent)
+  create: (event: Event) => {
+    events.push(event)
     return event
   },
 
-  update: (updated: Event) => {
-    const index = events.findIndex(t => t.id === updated.id)
-    if (index === -1) throw new Error("event not found")
-
-    events[index] = updated
+  update: (id: string, updated: Event) => {
+    events = events.map(e => e.id === id ? updated : e)
     return updated
   },
 
   delete: (id: string) => {
-    events = events.filter(t => t.id !== id)
-  },
-
-  getById: (id: string) => {
-  return events.find(t => t.id === id)
-}
+    events = events.filter(e => e.id !== id)
+    return { success: true }
+  }
 }

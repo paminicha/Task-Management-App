@@ -96,7 +96,7 @@ export default function DashboardPage() {
         <section className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
 
           <ChartCard value={totalProgress} />
-          <EventCard title="Event" events={todayEvents} />
+          <EventCard title="Event" events={todayEvents} update={updateEvent}/>
         </section>
 
         <div className="lg:col-span-6">

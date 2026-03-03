@@ -4,6 +4,7 @@ import { Task } from '@/Data/task';
 import { Pencil } from "lucide-react"
 import EditTaskProgressModal from '../dashboard/EditTaskProgressModal';
 import { useState } from 'react';
+// import { formatDateTime } from '@/features/hooks/formatDateTime';
 
 type TaskItemProps = {
   task: Task
@@ -20,6 +21,8 @@ function TaskItem({ task, isActive, onClick, update}: TaskItemProps) {
 
     const end = new Date(task.endDate)
     end.setHours(0, 0, 0, 0)
+    // const [startDate, startTime] = formatDateTime(task.startDate)
+    // const [endDate, endTime] = formatDateTime(task.endDate)
 
     const isOverdue = end < today
     const isDone = task.progress === 100

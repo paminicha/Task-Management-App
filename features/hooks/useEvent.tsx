@@ -3,29 +3,48 @@ import { useState, useMemo, useEffect } from "react"
 import { Event } from "@/Data/event"
 // import { mockEvents } from "@/Data/mockEvents"
 import { fetchEvent, createEvent, updateEvent, deleteEvent } from "../service/event.service"
+import { error } from "console"
 
 const STORAGE_KEY = "events"
 
 export function useEvent() {
     const [search, setSearch] = useState("")
     const [events, setEvents] = useState<Event[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
     const [searchStartDate, setSearchStartDate] = useState("")
     const [searchEndDate, setSearchEndDate] = useState("")
     const [sort, setSort] = useState<"az" | "newest">("az")
 
-    // Load from localStorage
-    useEffect(() => {
-        const stored = localStorage.getItem(STORAGE_KEY)
-        if (stored) {
-        setEvents(JSON.parse(stored))
-        }
-    }, [])
+    // // Load from localStorage
+    // useEffect(() => {
+    //     const stored = localStorage.getItem(STORAGE_KEY)
+    //     if (stored) {
+    //     setEvents(JSON.parse(stored))
+    //     }
+    // }, [])
 
-    // Sync to localStorage
+    // // Sync to localStorage
+    // useEffect(() => {
+    //     localStorage.setItem(STORAGE_KEY, JSON.stringify(events))
+    // }, [events])
+
+    // Load from API
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(events))
-    }, [events])
+        async function Load() {
+            try {
+                setLoading(true)
+                const data = await fetchEvent()
+                setEvents(data)
+            } catch (error: any) {
+                setError(error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+        Load()
+    }, [])
 
     const filteredEvents = useMemo(() => {
         return events.filter(e => {
@@ -64,10 +83,13 @@ export function useEvent() {
         setEvents(prev =>
         prev.map(e => (e.id === updated.id ? updated : e))
         )
+        setSelectedEvent(updated)
         try {
             await updateEvent(updated.id, updated)
         } catch (err) {
             setEvents(oldevents)// 2. ถ้า error → rollback
+            setSelectedEvent(null)
+            console.error("Update failed:", err)
         }
     }
 
@@ -75,6 +97,7 @@ export function useEvent() {
     const deleteEventHandler = async (id: string) => {
         const oldevents = [...events]
         setEvents(prev => prev.filter(e => e.id !== id))
+        setSelectedEvent(null)
         try {
             await deleteEvent(id)
         } catch (err) {
@@ -84,22 +107,34 @@ export function useEvent() {
 
     // Today's Events
     const todayEvents = useMemo(() => {
-        const today = new Date().toISOString().split("T")[0]
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
 
-        return events.filter(e =>
-            e.start.startsWith(today)
-        )
+    return events.filter(e => {
+        const start = new Date(e.start)
+        const end = new Date(e.end)
+
+        start.setHours(0, 0, 0, 0)
+        end.setHours(23, 59, 59, 999)
+
+        return start <= today && end >= today
+    })
     }, [events])
 
     return {
         events: sortedEvents,
         todayEvents,
+        selectedEvent,
+        setSelectedEvent,
+
         addEvent,
         updateEvent: updateEventhandler,
         deleteEvent: deleteEventHandler,
+
         setSearch,
         setSearchStartDate,
         setSearchEndDate,
-        setSort
+        setSort,
+        
     }
 }

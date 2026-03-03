@@ -1,7 +1,6 @@
 "use client"
 import { useState, useMemo, useEffect } from "react"
 import { Task } from "@/Data/task"
-import { mockTasks } from "@/Data/mockTasks"
 import { fetchTasks, createTask, updateTask, deleteTask } from "../service/task.service"
 import { TaskStatus } from "@/Data/task"
 
