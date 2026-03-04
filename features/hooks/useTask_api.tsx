@@ -1,24 +1,22 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Task } from "@/Data/task"
+import { fetchTasks, createTask, updateTask, deleteTask } from "../service/task.service"
 import { TaskStatus } from "@/Data/task"
-import { mockTasks } from "@/Data/mockTasks"
-// import { fetchTasks, createTask, updateTask, deleteTask } from "../service/task.service"
-// import { filterDateRange, sortData } from "./datesortFilter"
+import { filterDateRange, sortData } from "./datesortFilter"
 
 export function useTasks() {
   // const [tasks, setTasks] = useState<Task[]>(mockTasks)
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("tasks")
-    return saved ? JSON.parse(saved) : mockTasks
-  }
-  return mockTasks
-  })
-
-  // const [tasks, setTasks] = useState<Task[]>([])
-  // const [loading, setLoading] = useState(true)
-  // const [error, setError] = useState<string | null>(null)
+  // const [tasks, setTasks] = useState<Task[]>(() => {
+  //   if (typeof window !== "undefined") {
+  //     const saved = localStorage.getItem("tasks")
+  //   return saved ? JSON.parse(saved) : []
+  // }
+  // return []
+  // })
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [search, setSearch] = useState("")
@@ -29,25 +27,25 @@ export function useTasks() {
   const [endDate, setEndDate] = useState<string>("")
   const [sort, setSort] = useState<"az" | "newest">("az")
 
-  useEffect( () => {
-    localStorage.setItem("tasks", JSON.stringify(tasks)
-  )
-  }, [tasks])
+  // useEffect( () => {
+  //   localStorage.setItem("tasks", JSON.stringify(tasks)
+  // )
+  // }, [tasks])
 
-  // useEffect(() => {
-  //   async function load() {
-  //     try {
-  //       setLoading(true)
-  //       const data = await fetchTasks()
-  //       setTasks(data)
-  //     } catch (err: any) {
-  //       setError(err.message)
-  //     } finally {
-  //       setLoading(false)
-  //     }
-  //   }
-  //   load()
-  // }, [])
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoading(true)
+        const data = await fetchTasks()
+        setTasks(data)
+      } catch (err: any) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    load()
+  }, [])
 
   // const filteredTasks = useMemo(() => { //คำนวณค่าใหม่ “เฉพาะตอน dependency เปลี่ยน”
   //   let data = [...tasks]
@@ -82,12 +80,12 @@ export function useTasks() {
 
   const addTask = async (task: Task) => {
     setTasks(prev => [...prev, task])
-    
-    // try {
-    //   await createTask(task)
-    // } catch (err) {
-    //   setTasks(prev => prev.filter(t => t.id !== task.id))
-    // }
+    try {
+      await createTask(task)
+    } catch (err) {
+      // 2. ถ้า error → rollback
+      setTasks(prev => prev.filter(t => t.id !== task.id))
+    }
   }
 
   // const updateTask = (updated: Task) => {
@@ -102,8 +100,8 @@ export function useTasks() {
       updated.progress === 0 ? { ...updated, status: "Todo" as TaskStatus} : 
       { ...updated, status: "Doing" as TaskStatus}
 
-    // const oldTasks = [...tasks]
-    // const oldSelected = selectedTask
+    const oldTasks = [...tasks]
+    const oldSelected = selectedTask
 
     setTasks(prev =>
       prev.map(t =>
@@ -113,12 +111,12 @@ export function useTasks() {
 
     setSelectedTask(normalizedTask)
 
-    // try {
-    //   await updateTask(normalizedTask.id, normalizedTask)
-    // } catch {
-    //   setTasks(oldTasks)
-    //   setSelectedTask(oldSelected)
-    // }
+    try {
+      await updateTask(normalizedTask.id, normalizedTask)
+    } catch {
+      setTasks(oldTasks)
+      setSelectedTask(oldSelected)
+    }
   }
 
   // const deleteTask = (id: string) => {
@@ -126,23 +124,23 @@ export function useTasks() {
   //   setSelectedTask(null)
   // }
   const deleteTaskHandler = async (id: string) => {
-    // const oldTasks = tasks
+    const oldTasks = tasks
 
     setTasks(prev => prev.filter(t => t.id !== id))
     setSelectedTask(null)
 
-    // try {
-    //   await deleteTask(id)
-    // } catch {
-    //   setTasks(oldTasks) // rollback
-    // }
+    try {
+      await deleteTask(id)
+    } catch {
+      setTasks(oldTasks) // rollback
+    }
   }
 
   return {
     tasks,
     rawTasks: tasks,
-    // loading, 
-    // error, 
+    loading, 
+    error, 
 
     selectedTask,
     setSelectedTask,

@@ -1,23 +1,17 @@
 "use client"
 import { useState, useMemo, useEffect } from "react"
 import { Event } from "@/Data/event"
-import { mockEvents } from "@/Data/mockEvents"
-// import { fetchEvent, createEvent, updateEvent, deleteEvent } from "../service/event.service"
-// import { error } from "console"
+// import { mockEvents } from "@/Data/mockEvents"
+import { fetchEvent, createEvent, updateEvent, deleteEvent } from "../service/event.service"
+import { error } from "console"
+import { filterDateRange, sortData } from "./datesortFilter"
 
 const STORAGE_KEY = "events"
 
 export function useEvent() {
-    const [events, setEvents] = useState<Event[]>(() => {
-        if (typeof window !== "undefined") {
-            const saved = localStorage.getItem("events")
-        return saved ? JSON.parse(saved) : mockEvents
-        }
-        return mockEvents
-    })
-    // const [events, setEvents] = useState<Event[]>([])
-    // const [loading, setLoading] = useState(true)
-    // const [error, setError] = useState<string | null>(null)
+    const [events, setEvents] = useState<Event[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
 
     const [search, setSearch] = useState("")
@@ -25,26 +19,34 @@ export function useEvent() {
     const [searchEndDate, setSearchEndDate] = useState("")
     const [sort, setSort] = useState<"az" | "newest">("az")
 
-    // Sync to localStorage
-    useEffect(() => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(events))
-    }, [events])
-
-    // // Load from API
+    // // Load from localStorage
     // useEffect(() => {
-    //     async function Load() {
-    //         try {
-    //             setLoading(true)
-    //             const data = await fetchEvent()
-    //             setEvents(data)
-    //         } catch (error: any) {
-    //             setError(error.message)
-    //         } finally {
-    //             setLoading(false)
-    //         }
+    //     const stored = localStorage.getItem(STORAGE_KEY)
+    //     if (stored) {
+    //     setEvents(JSON.parse(stored))
     //     }
-    //     Load()
     // }, [])
+
+    // // Sync to localStorage
+    // useEffect(() => {
+    //     localStorage.setItem(STORAGE_KEY, JSON.stringify(events))
+    // }, [events])
+
+    // Load from API
+    useEffect(() => {
+        async function Load() {
+            try {
+                setLoading(true)
+                const data = await fetchEvent()
+                setEvents(data)
+            } catch (error: any) {
+                setError(error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+        Load()
+    }, [])
 
     // const filteredEvents = useMemo(() => {
     //     return events.filter(e => {
@@ -64,12 +66,12 @@ export function useEvent() {
     // Add
     const addEvent = async (event: Event) => {
         setEvents(prev => [...prev, event])
-        // try {
-        //     await createEvent(event)
-        // } catch (err) {
-        // // 2. ถ้า error → rollback
-        // setEvents(prev => prev.filter(e => e.id !== event.id))
-        // }
+        try {
+            await createEvent(event)
+        } catch (err) {
+        // 2. ถ้า error → rollback
+        setEvents(prev => prev.filter(e => e.id !== event.id))
+        }
     }
 
     // Update
@@ -79,13 +81,13 @@ export function useEvent() {
         prev.map(e => (e.id === updated.id ? updated : e))
         )
         setSelectedEvent(updated)
-        // try {
-        //     await updateEvent(updated.id, updated)
-        // } catch (err) {
-        //     setEvents(oldevents)// 2. ถ้า error → rollback
-        //     setSelectedEvent(null)
-        //     console.error("Update failed:", err)
-        // }
+        try {
+            await updateEvent(updated.id, updated)
+        } catch (err) {
+            setEvents(oldevents)// 2. ถ้า error → rollback
+            setSelectedEvent(null)
+            console.error("Update failed:", err)
+        }
     }
 
     // Delete
@@ -93,11 +95,11 @@ export function useEvent() {
         const oldevents = [...events]
         setEvents(prev => prev.filter(e => e.id !== id))
         setSelectedEvent(null)
-        // try {
-        //     await deleteEvent(id)
-        // } catch (err) {
-        //     setEvents(oldevents)// 2. ถ้า error → rollback
-        // }
+        try {
+            await deleteEvent(id)
+        } catch (err) {
+            setEvents(oldevents)// 2. ถ้า error → rollback
+        }
     }
 
     // Today's Events
@@ -119,8 +121,8 @@ export function useEvent() {
     return {
         events,
         todayEvents,
-        // loading,
-        // error,
+        loading,
+        error,
 
         selectedEvent,
         setSelectedEvent,

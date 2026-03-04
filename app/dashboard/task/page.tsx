@@ -20,7 +20,7 @@ export default function TaskPage() {
   const filter = useDashboardFilter()
 
   // const sortedTasks = selectTasks(task.tasks, filter)
-  // 🧠 selector layer
+  // selector layer
   const sortedTasks = useMemo(() => {
     return selectTasks(task.tasks, filter)
   }, [task.tasks, filter])

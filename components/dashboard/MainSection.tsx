@@ -40,13 +40,13 @@ export default function MainSection( {tasks, events, taskActions, eventActions}:
         <EventCard title="Event" events={events} update={eventActions.updateEvent}/>
     </section>
 
-    <div className="lg:col-span-6">
+    <div className="lg:col-span-9">
         <TodayTaskList tasks={tasks} addTask={taskActions.addTask} update={taskActions.updateTask}/>
     </div>
 
-    <div className="lg:col-span-3">
+    {/* <div className="lg:col-span-3">
         <WeeklyCard />
-    </div>
+    </div> */}
     </section>
 
   )

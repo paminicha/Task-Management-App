@@ -5,7 +5,7 @@ import GoalItem from './GoalItem'
 function GoalRoutineCard() {
   return (
     <Card>
-        <h3 className="text-lg font-semibold text-gray-700 pl-2">Goal</h3>
+        <h3 className="text-lg font-semibold text-gray-700 pl-2">Goal Routine</h3>
         <div className="flex items-center justify-between mb-4">
             <div className="flex overflow-x-auto whitespace-nowrap scrollbar-hide space-x-3 pr-2">
                 <GoalItem title='Wake up 7.00' goal_note='Daily'/>
