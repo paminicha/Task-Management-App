@@ -1,43 +1,47 @@
 "use client"
-
+import { useState, useMemo } from "react"
 import DashboardHeader from "@/components/ui/DashboardHeader"
 import { Button } from "@/components/ui/Button"
 import { Card } from "@/components/ui/Card"
+// import TaskList from "./components/TaskList"
+// import TaskDetailPanel from "./components/TaskDetailPanel"
+import AddTaskModal from "@/components/task/AddTaskModal"
+
+import { useTasks } from "@/features/hooks/useTask"
+import { useDashboardFilter } from "@/features/hooks/useDashboardFilter"
+import { selectTasks } from "@/features/hooks/taskSelector"
+
 import TaskDetail from "@/components/task/TaskDetail"
 import TaskItem from "@/components/task/TaskItem"
-import AddTaskModal from "@/components/task/AddTaskModal"
-import { useTasks } from "@/features/hooks/useTask"
-import { useState } from "react"
 
 export default function TaskPage() {
 
-  const {
-    tasks,
-    selectedTask,
-    setSelectedTask,
-    search,
-    setSearch,
-    setStatus, 
-    addTask,
-    updateTask,
-    deleteTask,
-    setCategory,
-    setPriority,
-    setStartDate,
-    setEndDate,
-    setSort,
-  } = useTasks()
+  const task = useTasks()
+  const filter = useDashboardFilter()
+
+  // const sortedTasks = selectTasks(task.tasks, filter)
+  // 🧠 selector layer
+  const sortedTasks = useMemo(() => {
+    return selectTasks(task.tasks, filter)
+  }, [task.tasks, filter])
 
   const [isAddOpen, setIsAddOpen] = useState(false)
+  const isTaskSelected = Boolean(task.selectedTask)
   // console.log(typeof window)
 
   return (
     <div>
-      
-      <DashboardHeader title="Tasks" 
-        setSearch={setSearch} search={search} setStatus={setStatus} setCategory={setCategory}
-        setPriority={setPriority} setStartDate={setStartDate} setEndDate={setEndDate} setSort={setSort} 
-        />
+      <DashboardHeader
+              title="Tasks"
+              search={filter.search}
+              setSearch={filter.setSearch}
+              setStatus={filter.setStatus}
+              setPriority={filter.setPriority}
+              setCategory={filter.setCategory}
+              setStartDate={filter.setStartDate}
+              setEndDate={filter.setEndDate}
+              setSort={filter.setSort}
+            />
 
       <div className="px-3">
         <Button onClick={() => setIsAddOpen(true)} className="cursor-pointer">
@@ -52,18 +56,18 @@ export default function TaskPage() {
           <div
             className={`
               transition-all duration-300
-              ${selectedTask ? "hidden lg:block lg:w-[60%]" : "w-full lg:w-[60%]"}
+              ${isTaskSelected ? "hidden lg:block lg:w-[60%]" : "w-full lg:w-[60%]"}
               overflow-y-auto space-y-3 pr-2
             `}
           >
           
-            {tasks.map(task => (
+            {sortedTasks.map(t => (
               <TaskItem
-                key={task.id}
-                task={task}
-                isActive={selectedTask?.id === task.id}
-                onClick={() => setSelectedTask(task)}
-                update={updateTask}
+                key={t.id}
+                task={t}
+                isActive={task.selectedTask?.id === t.id}
+                onClick={() => task.setSelectedTask(t)}
+                update={task.updateTask}
               />
             ))}
           </div>
@@ -72,20 +76,20 @@ export default function TaskPage() {
           <div
             className={`
               transition-all duration-300
-              ${selectedTask ? "w-full lg:w-[40%]" : "hidden lg:block lg:w-[40%]"}
+              ${isTaskSelected ? "w-full lg:w-[40%]" : "hidden lg:block lg:w-[40%]"}
               overflow-y-auto
             `}
           >
-            {selectedTask ? (
+            {isTaskSelected ? (
               <div className="h-full flex flex-col">
                 <button
-                  onClick={() => setSelectedTask(null)}
+                  onClick={() => task.setSelectedTask(null)}
                   className="lg:hidden mb-2 text-sm text-gray-500 text-left"
                 >
                   ← Back
                 </button>
 
-                <TaskDetail task={selectedTask} update={updateTask} deleteTask={deleteTask}/>
+                <TaskDetail task={task.selectedTask} update={task.updateTask} deleteTask={task.deleteTask}/>
               </div>
             ) : (
               <div className="h-full flex items-center justify-center text-gray-400">
@@ -100,7 +104,7 @@ export default function TaskPage() {
         <AddTaskModal
           onClose={() => setIsAddOpen(false)}
           onSave={(newTask) => {
-            addTask(newTask)
+            task.addTask(newTask)
             setIsAddOpen(false)
           }}
         />

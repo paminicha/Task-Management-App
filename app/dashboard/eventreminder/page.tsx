@@ -3,24 +3,23 @@
 import DashboardHeader from "@/components/ui/DashboardHeader"
 import { Button } from "@/components/ui/Button"
 import { Card } from "@/components/ui/Card"
-import TaskDetail from "@/components/task/TaskDetail"
 import EventItem_date from "@/components/reminder/EventItem_date"
 import AddEventModal from "@/components/reminder/AddEventModal"
-import { useTasks } from "@/features/hooks/useTask"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useEvent } from "@/features/hooks/useEvent"
+import { useDashboardFilter } from "@/features/hooks/useDashboardFilter"
+import { selectEvents } from "@/features/hooks/eventSelector"
 
-export default function TaskPage() {
+export default function eventPage() {
 
-  const {
-    events,
-    todayEvents,
-    addEvent,
-    updateEvent,
-    deleteEvent,
-    selectedEvent,
-    setSelectedEvent
-  } = useEvent()
+  const event = useEvent()
+  const filter = useDashboardFilter()
+  
+  // const sortedevents = selectevents(event.events, filter)
+  // 🧠 selector layer
+  const sortedEvents = useMemo(() => {
+    return selectEvents(event.events, filter)
+  }, [event.events, filter])
 
   const [isAddOpen, setIsAddOpen] = useState(false)
   // console.log(typeof window)
@@ -28,9 +27,17 @@ export default function TaskPage() {
   return (
     <div>
       
-      {/* <DashboardHeader title="Events" 
-        setSearch={setSearch} search={search} setStartDate={setStartDate} setEndDate={setEndDate} setSort={setSort} 
-        /> */}
+      <DashboardHeader
+              title="Overview"
+              search={filter.search}
+              setSearch={filter.setSearch}
+              setStatus={filter.setStatus}
+              setPriority={filter.setPriority}
+              setCategory={filter.setCategory}
+              setStartDate={filter.setStartDate}
+              setEndDate={filter.setEndDate}
+              setSort={filter.setSort}
+            />
         <h1>Events</h1>
 
       <div className="px-3">
@@ -45,19 +52,18 @@ export default function TaskPage() {
           {/* Event List */}
           <div
             className={`
-              transition-all duration-300
-              ${selectedEvent ? "hidden lg:block lg:w-[60%]" : "w-full lg:w-[60%]"}
+              transition-all duration-300 w-full
               overflow-y-auto space-y-3 pr-2
             `}
           >
           
-            {events.map(event => (
+            {sortedEvents.map(e => (
               <EventItem_date
-                event={event}
-                key={Number(event.id)}
-                isActive={selectedEvent?.id === event.id}
-                onClick={() => setSelectedEvent(event)}
-                update={updateEvent}
+                event={e}
+                key={Number(e.id)}
+                isActive={event.selectedEvent?.id === e.id}
+                onClick={() => event.setSelectedEvent(e)}
+                update={event.updateEvent}
               />
             ))}
           </div>
@@ -68,7 +74,7 @@ export default function TaskPage() {
         <AddEventModal
           onClose={() => setIsAddOpen(false)}
           onSave={(newEvent) => {
-            addEvent(newEvent)
+            event.addEvent(newEvent)
             setIsAddOpen(false)
           }}
         />

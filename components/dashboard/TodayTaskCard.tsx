@@ -5,6 +5,7 @@ import { Task } from "@/Data/task"
 import AddTaskModal from "../task/AddTaskModal"
 
 import { useState } from "react";
+import { useMemo } from "react"
 
 type Props = {
   tasks: Task[]
@@ -19,7 +20,18 @@ export default function TodayTaskList({ tasks , addTask, update}: Props) {
   tasks = tasks.filter(t => {
     return t.progress !== 100
   })
-  // setTasks(prev => prev.filter(t => t.progress !== 100))
+
+  const todayTasks = useMemo(() => {
+    const today = new Date()
+    today.setHours(23, 59, 59, 999)
+
+    return tasks.filter(t => {
+      const start = new Date(t.startDate)
+      const end = new Date(t.endDate)
+
+      return start <= today //&& end >= today
+    })
+  }, [tasks])
   
   return (
     <Card className="h-100 pl-2 flex flex-col">
@@ -32,7 +44,7 @@ export default function TodayTaskList({ tasks , addTask, update}: Props) {
       </div>
 
       <div className="flex-1 overflow-y-auto space-y-3 pr-2">
-        {tasks.map( task => (
+        {todayTasks.map( task => (
           <TaskItem key={task.id}
                 task={task}
                 isActive={false}

@@ -14,7 +14,7 @@ export default function EditTaskModal({ task, onClose, onSave }: Props) {
 
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description);
-  const [status, setStatus] = useState<TaskStatus>(task.status);
+  // const [status, setStatus] = useState<TaskStatus>(task.status);
   const [priority, setPriority] = useState<TaskPriority>(task.priority);
   const [progress, setProgress] = useState(task.progress?.toString() || "")
   const [category, setCategory] = useState(task.category);
@@ -196,7 +196,7 @@ export default function EditTaskModal({ task, onClose, onSave }: Props) {
                   ...task,
                   title,
                   description,
-                  status,
+                  // status,
                   priority,
                   progress: Number(progress) || 0,
                   startDate,

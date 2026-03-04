@@ -30,6 +30,7 @@ export default function MainSection( {tasks, events, taskActions, eventActions}:
           tasks.reduce((acc, t) => acc + (t.progress ?? 0), 0) /
             tasks.length
         )
+    
 
   return (
     <section className="grid lg:grid-cols-12 gap-3">

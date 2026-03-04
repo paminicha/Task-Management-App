@@ -15,7 +15,7 @@ export default function AddTaskModal({ onClose, onSave }: Props) {
   // const [status, setStatus] = useState<TaskStatus>("Todo");
   const [priority, setPriority] = useState<TaskPriority>("low");
   const [progress, setProgress] = useState("0")
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("Work");
   const [note, setNote] = useState("");
   const [startDate, setStartDate] = useState(new Date().setHours(0, 0, 0, 0).toString());
   const [endDate, setEndDate] = useState(new Date().setHours(0, 0, 0, 0).toString());

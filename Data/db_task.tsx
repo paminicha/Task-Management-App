@@ -7,13 +7,20 @@ export const db_task = {
   get: () => [...tasks],
 
   create: (task: Omit<Task, "id">) => {
+    console.log("TASKS:", task)
     const newTask = { ...task, id: crypto.randomUUID() }
+    console.log("NEWTASKS:", newTask)
+
     tasks.push(newTask)
-    return task
+    console.log("NEWTASKS:", tasks)
+    return newTask
   },
 
   update: (updated: Task) => {
+    console.log("UPDATED:", updated)
+    console.log("TASKS:", tasks)
     const index = tasks.findIndex(t => t.id === updated.id)
+    console.log("FOUND INDEX:", index)
     if (index === -1) throw new Error("Task not found")
 
     tasks[index] = updated
