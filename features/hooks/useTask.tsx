@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Task } from "@/Data/task"
 import { TaskStatus } from "@/Data/task"
 import { mockTasks } from "@/Data/mockTasks"
@@ -138,8 +138,25 @@ export function useTasks() {
     // }
   }
 
+  // Today's Tasks
+  const todayTasks = useMemo(() => {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+
+      return tasks.filter(e => {
+          const start = new Date(e.startDate)
+          const end = new Date(e.endDate)
+
+          start.setHours(0, 0, 0, 0)
+          end.setHours(23, 59, 59, 999)
+
+          return start <= today && end >= today
+      })
+  }, [tasks])
+
   return {
     tasks,
+    todayTasks,
     rawTasks: tasks,
     // loading, 
     // error, 

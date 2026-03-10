@@ -17,8 +17,24 @@ export default function DashboardClient() {
   const event = useEvent()
   const filter = useDashboardFilter()
 
-  const sortedTasks = selectTasks(task.tasks, filter)
-  const sortedEvents = selectEvents(event.events, filter)
+  // const sortedTasks = selectTasks(task.tasks, filter)
+  // const sortedEvents = selectEvents(event.events, filter)
+
+  let sortedTasks
+  if (filter.startDate || filter.endDate) {
+    sortedTasks = selectTasks(task.tasks, filter)
+  } else {
+    sortedTasks = selectTasks(task.todayTasks, filter)
+  }
+
+  let sortedEvents
+  if (filter.startDate || filter.endDate) {
+    sortedEvents = selectEvents(event.events, filter)
+  } else {
+    sortedEvents = selectEvents(event.todayEvents, filter)
+  }
+
+
   console.log("tasks:", task.tasks)
   console.log("sortedTasks:", sortedTasks)
 

@@ -7,6 +7,7 @@ export interface StatsSectionProps {
 }
 
 export default function StatsSection({tasks} : StatsSectionProps ) {
+  console.log("state section", tasks)
   const total = tasks.length
   const done = tasks.filter(t => t.status === "Done").length
   const doing = tasks.filter(t => t.status === "Doing").length
