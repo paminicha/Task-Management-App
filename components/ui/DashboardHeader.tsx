@@ -60,8 +60,8 @@ export default function DashboardHeader({title, setSearch, search, setStatus,
           {/* "title-asc" | "title-desc" | "date-asc" | "date-desc" */}
           <option value="title-asc">A - Z</option>
           <option value="title-desc">Z - A</option>
-          <option value="date-asc">Newest</option>
-          <option value="date-desc">Oldest</option>
+          <option value="date-desc">Newest</option>
+          <option value="date-asc">Oldest</option>
         </select>
 
         <input type="date" className="px-3 py-2 border rounded-lg" onChange={e => setStartDate(e.target.value)} />
